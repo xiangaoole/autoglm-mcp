@@ -1,0 +1,86 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "autoglm-mcp"
+version = "0.1.0"
+description = "AutoGLM MCP Server - Android screen analysis via MCP protocol"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.10"
+authors = [
+    { name = "Open-AutoGLM Team" }
+]
+maintainers = [
+    { name = "Open-AutoGLM Team" }
+]
+keywords = [
+    "mcp",
+    "autoglm",
+    "android",
+    "screen-analysis",
+    "ai",
+    "automation",
+    "claude",
+    "llm",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "mcp>=1.0.0",
+    "openai>=1.0.0",
+    "pillow>=10.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "mypy>=1.0.0",
+    "ruff>=0.1.0",
+]
+
+[project.scripts]
+autoglm-mcp = "autoglm_mcp:main"
+
+[project.urls]
+Homepage = "https://github.com/xiangaoole/autoglm-mcp"
+Repository = "https://github.com/xiangaoole/autoglm-mcp"
+Documentation = "https://github.com/xiangaoole/autoglm-mcp#readme"
+Changelog = "https://github.com/xiangaoole/autoglm-mcp/blob/main/CHANGELOG.md"
+"Bug Tracker" = "https://github.com/xiangaoole/autoglm-mcp/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/autoglm_mcp"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md",
+]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_ignores = true

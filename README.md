@@ -6,16 +6,18 @@ Android screen analysis capabilities via MCP protocol.
 
 ### Option 1: Using uvx (Recommended)
 
-No manual installation required. Just add to AI agent mcp config:
+No manual installation required. Just add to AI agent MCP config:
 
 ```json
 {
   "mcpServers": {
-    "autoglm": {
+    "autoglm-mcp": {
       "command": "uvx",
       "args": ["autoglm-mcp"],
       "env": {
-        "AUTOGLM_APIKEY": "your-api-key"
+        "AUTOGLM_BASE_URL": "https://api.z.ai/api/paas/v4",
+        "AUTOGLM_MODEL": "autoglm-phone-multilingual",
+        "AUTOGLM_APIKEY": "your-api-key-here"
       }
     }
   }
@@ -28,14 +30,13 @@ No manual installation required. Just add to AI agent mcp config:
 pip install autoglm-mcp
 ```
 
-Then configure AI agent mcp:
+Then configure AI agent MCP:
 
 ```json
 {
   "mcpServers": {
     "autoglm-mcp": {
-      "command": "uvx",
-      "args": ["autoglm-mcp"],
+      "command": "autoglm-mcp",
       "env": {
         "AUTOGLM_BASE_URL": "https://api.z.ai/api/paas/v4",
         "AUTOGLM_MODEL": "autoglm-phone-multilingual",
@@ -56,7 +57,7 @@ Then configure AI agent mcp:
 
 ## Usage
 
-Ensure your phone is connected via ADB, then use the `aiAsk` tool in Claude:
+Ensure your phone is connected via ADB, then use the `aiAsk` tool in AI agent:
 
 - "What are the coordinates to click the search button?"
 - "How do I open Settings?"

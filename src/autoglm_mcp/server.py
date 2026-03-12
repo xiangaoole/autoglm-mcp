@@ -21,7 +21,6 @@ import subprocess
 import sys
 import tempfile
 from datetime import datetime
-from io import BytesIO
 
 try:
     from mcp.server import Server
@@ -35,12 +34,6 @@ try:
     from openai import OpenAI
 except ImportError:
     print("Please install openai: pip install openai", file=sys.stderr)
-    sys.exit(1)
-
-try:
-    from PIL import Image
-except ImportError:
-    print("Please install pillow: pip install pillow", file=sys.stderr)
     sys.exit(1)
 
 # ============ Configuration ============
@@ -121,14 +114,13 @@ Your output should STRICTLY follow the format:
 REMEMBER:
 - You MUST respond in English only. However, keep UI text (buttons, labels, etc.) in their original language as shown on screen.
 - Think before you act: Always analyze the current UI and the best course of action before executing any step.
-- Coordinates are on a 0-1000 relative scale. To convert to pixels: x_pixel = x / 1000 * screen_width
 - Only ONE LINE of action in <answer> part per response.
 """
 
 
 # ============ ADB Utilities ============
-def get_screenshot_with_info() -> tuple[str, int, int]:
-    """Get phone screenshot via ADB, returns (base64, width, height)"""
+def get_screenshot_with_info() -> str:
+    """Get phone screenshot via ADB, returns base64 encoded image"""
     with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
         temp_path = f.name
 
@@ -142,13 +134,10 @@ def get_screenshot_with_info() -> tuple[str, int, int]:
             check=True, capture_output=True
         )
 
-        # Read image to get dimensions
         with open(temp_path, "rb") as f:
             img_data = f.read()
-            img = Image.open(BytesIO(img_data))
-            width, height = img.size
 
-        return base64.b64encode(img_data).decode("utf-8"), width, height
+        return base64.b64encode(img_data).decode("utf-8")
     finally:
         if os.path.exists(temp_path):
             os.remove(temp_path)
@@ -181,9 +170,10 @@ async def list_tools():
 
 Response format:
 - <think>...</think> Analysis process
-- <answer>do(action="Tap", element=[x,y])</answer> Action suggestion
+- <answer>do(action="Tap", element=[x,y])</answer> 
+- <answer>The element coordinates is [0,339,999,407]</answer> 
 
-Note: Coordinates are relative values (0-1000), conversion formula:
+Note: Element coordinates are relative values (0-1000), conversion formula:
   x_pixel = int(x / 1000 * screen_width)
   y_pixel = int(y / 1000 * screen_height)
 
@@ -229,7 +219,7 @@ async def ai_ask(question: str):
     def run_request():
         """Execute API request in thread"""
         # Get screenshot and screen info
-        screenshot_b64, width, height = get_screenshot_with_info()
+        screenshot_b64 = get_screenshot_with_info()
         current_app = get_current_app()
 
         # Build screen info (consistent with phone_agent)
@@ -265,17 +255,7 @@ async def ai_ask(question: str):
         result = response.choices[0].message.content
 
         # Add screen info for coordinate conversion
-        return f"""
----
-⚠️ IMPORTANT: Coordinates below are relative (0-1000 scale), NOT pixels!
-
-Must convert to pixels using:
-Screen Info:
-- Resolution: {width} x {height}
-- Coordinate conversion: x_pixel = int(x / 1000 * {width}), y_pixel = int(y / 1000 * {height})
----
-
-{result}"""
+        return f"""{result}"""
 
     try:
         result = await asyncio.wait_for(

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "autoglm-mcp"
-version = "0.1.1"
+version = "0.1.2"
 description = "AutoGLM MCP Server - Android screen analysis via MCP protocol"
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -41,7 +41,6 @@ classifiers = [
 dependencies = [
     "mcp>=1.0.0",
     "openai>=1.0.0",
-    "pillow>=10.0.0",
 ]
 
 [project.optional-dependencies]
